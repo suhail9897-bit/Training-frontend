@@ -4,6 +4,7 @@ import axios from "axios";
 import DeleteTrainingModal from "../../components/TrainingTabModals/DeleteTrainingModal";
 import EditTrainingModal from "../../components/TrainingTabModals/EditTrainingModal";
 import Chapters from "../Admindashboardbuttons/Chapters";
+import API_BASE_URL from "../../config";
 
 function Trainings() {
   const [showForm, setShowForm] = useState(false);
@@ -24,7 +25,7 @@ function Trainings() {
 
   const fetchTrainings = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/admin/trainings", {
+      const response = await axios.get(`${API_BASE_URL}/api/admin/trainings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setTrainings(response.data);
@@ -35,7 +36,7 @@ function Trainings() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/training/${selectedTraining._id}`, {
+      await axios.delete(`${API_BASE_URL}/api/admin/training/${selectedTraining._id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setShowModal(false);

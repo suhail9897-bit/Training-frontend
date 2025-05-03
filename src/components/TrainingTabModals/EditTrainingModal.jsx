@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../../config";
 
 function EditTrainingModal({ training, onClose, onUpdate }) {
   const [formData, setFormData] = useState(training);
@@ -10,7 +11,7 @@ function EditTrainingModal({ training, onClose, onUpdate }) {
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/training/${training._id}`, formData, {
+      await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       onUpdate();

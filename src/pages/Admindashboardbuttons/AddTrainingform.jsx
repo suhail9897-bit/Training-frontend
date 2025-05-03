@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../../config";
 
 function AddTrainingForm({ onBack }) {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ function AddTrainingForm({ onBack }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/admin/Add-Training", formData, {
+      await axios.post(`${API_BASE_URL}/api/admin/Add-Training`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       alert("Training added successfully!");

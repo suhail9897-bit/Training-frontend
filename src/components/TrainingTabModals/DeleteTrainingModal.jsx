@@ -1,5 +1,7 @@
 import React from 'react';
 
+
+
 const DeleteTrainingModal = ({ show, onClose, onConfirm, trainingName }) => {
   if (!show) return null;
 
