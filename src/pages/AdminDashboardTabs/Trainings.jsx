@@ -101,11 +101,15 @@ function Trainings() {
                       </button>
   
                       <button
-                        onClick={() => setShowChapters(true)}
-                        className="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded transition transform hover:scale-105"
-                      >
-                        Chapter
-                      </button>
+  onClick={() => {
+    setSelectedTraining(training);   // 👈 store selected training
+    setShowChapters(true);
+  }}
+  className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-white shadow transition transform hover:scale-105 ml-2"
+>
+  Chapter
+</button>
+
                       <button
                         onClick={() => {
                           setSelectedTraining(training);
@@ -139,7 +143,8 @@ function Trainings() {
       ) : showForm ? (
         <AddTrainingForm onBack={() => setShowForm(false)} />
       ) : (
-        <Chapters onBack={() => setShowChapters(false)} />
+        <Chapters onBack={() => setShowChapters(false)} trainingId={selectedTraining?._id} />
+
       )}
   
       {showEditModal && (
