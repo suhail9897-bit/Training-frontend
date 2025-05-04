@@ -9,6 +9,7 @@ import API_BASE_URL from "../../config";
 function Trainings() {
   const [showForm, setShowForm] = useState(false);
   const [trainings, setTrainings] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -24,6 +25,7 @@ function Trainings() {
   }, []);
 
   const fetchTrainings = async () => {
+    setLoading(true); // ✅ Start loading
     try {
       const response = await axios.get(`${API_BASE_URL}/api/admin/trainings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -32,6 +34,7 @@ function Trainings() {
     } catch (error) {
       console.error("Error fetching trainings:", error);
     }
+    setLoading(false); // ✅ End loading
   };
 
   const handleDelete = async () => {
@@ -59,14 +62,27 @@ function Trainings() {
       {!showForm && !showChapters ? (
         <>
           <div className="flex justify-between items-center w-full max-w-7xl mb-6">
-            <h1 className="text-4xl font-extrabold tracking-wide">Trainings</h1>
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-lg shadow-xl transition transform hover:scale-105"
-            >
-              Add Training
-            </button>
-          </div>
+  <h1 className="text-4xl font-extrabold tracking-wide">Trainings</h1>
+  <div className="flex gap-3">
+  <button
+  onClick={fetchTrainings}
+  disabled={loading}
+  className={`px-6 py-3 ${
+    loading ? 'opacity-50 cursor-not-allowed' : ''
+  } bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg shadow-xl transition transform hover:scale-105`}
+>
+  {loading ? 'Refreshing...' : 'Refresh'}
+</button>
+
+    <button
+      onClick={() => setShowForm(true)}
+      className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-lg shadow-xl transition transform hover:scale-105"
+    >
+      Add Training
+    </button>
+  </div>
+</div>
+
   
           <div className="overflow-x-auto w-full max-w-7xl shadow-lg rounded-lg bg-[#1a1a1a]">
             <table className="w-full text-left text-sm border-collapse">
