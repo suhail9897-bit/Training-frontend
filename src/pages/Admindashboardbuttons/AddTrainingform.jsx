@@ -4,7 +4,7 @@ import API_BASE_URL from "../../config";
 
 function AddTrainingForm({ onBack }) {
   const [formData, setFormData] = useState({
-    name: "",
+    trainingId: "",
     trainingTitle: "",
     description: "",
     category: "",
@@ -28,7 +28,7 @@ function AddTrainingForm({ onBack }) {
       });
       alert("Training added successfully!");
       setFormData({
-        name: "",
+        trainingId: "",
         trainingTitle: "",
         description: "",
         category: "",
@@ -61,12 +61,12 @@ function AddTrainingForm({ onBack }) {
         className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-0 md:px-12"
       >
         <div className="flex flex-col">
-          <label className="mb-1 text-sm font-semibold tracking-wide">Training Name</label>
+          <label className="mb-1 text-sm font-semibold tracking-wide">Training ID</label>
           <input
             type="text"
-            name="name"
-            placeholder="Enter Training Name"
-            value={formData.name}
+            name="trainingId"
+            placeholder="Enter Training ID"
+            value={formData.trainingId}
             onChange={handleChange}
             className="p-4 rounded-lg bg-[#111827] text-white placeholder-green-400 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
             required

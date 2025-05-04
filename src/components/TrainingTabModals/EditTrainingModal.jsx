@@ -28,10 +28,10 @@ function EditTrainingModal({ training, onClose, onUpdate }) {
         <h2 className="text-2xl font-bold mb-6">Edit Training</h2>
 
         <div className="grid grid-cols-2 gap-5">
-          {/* Name */}
+          {/* training Id */}
           <div>
-            <label className="block text-sm font-semibold mb-1">Name</label>
-            <input name="name" value={formData.name} onChange={handleChange}
+            <label className="block text-sm font-semibold mb-1">Training ID</label>
+            <input name="trainingId" value={formData.trainingId} onChange={handleChange}
               className="w-full p-3 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"/>
           </div>
 

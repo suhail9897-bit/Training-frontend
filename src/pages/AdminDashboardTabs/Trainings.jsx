@@ -72,7 +72,7 @@ function Trainings() {
             <table className="w-full text-left text-sm border-collapse">
               <thead>
                 <tr className="bg-[#2c2c2c] text-green-400">
-                  <th className="py-3 px-4">Name</th>
+                  <th className="py-3 px-4">Training ID</th>
                   <th className="py-3 px-4">Title</th>
                   <th className="py-3 px-4">Description</th>
                   <th className="py-3 px-4">Category</th>
@@ -85,7 +85,7 @@ function Trainings() {
               <tbody>
                 {trainings.map((training) => (
                   <tr key={training._id} className="border-b border-[#333] hover:bg-[#222] transition">
-                    <td className="py-3 px-4">{training.name}</td>
+                    <td className="py-3 px-4">{training.trainingId}</td>
                     <td className="py-3 px-4">{training.trainingTitle}</td>
                     <td className="py-3 px-4">{training.description}</td>
                     <td className="py-3 px-4">{training.category}</td>
@@ -107,7 +107,7 @@ function Trainings() {
   }}
   className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-white shadow transition transform hover:scale-105 ml-2"
 >
-  Chapter
+  Chapters
 </button>
 
                       <button
