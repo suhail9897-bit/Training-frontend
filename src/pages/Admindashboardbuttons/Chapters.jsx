@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import AddchapterForm from './AddchapterForm';
 import API_BASE_URL from "../../config";
 import axios from 'axios';
+import EditChapter from './EditChapter';
 
 
 function Chapters({ onBack, trainingId }) {
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingChapter, setEditingChapter] = useState(null); 
   const [chapters, setChapters] = useState([]);
 
   useEffect(() => {
@@ -28,6 +30,13 @@ function Chapters({ onBack, trainingId }) {
 
 
   return (
+
+    editingChapter ? (
+      <EditChapter chapter={editingChapter} trainingId={trainingId} onBack={() => setEditingChapter(null)} />
+
+    ) : (
+    
+    
     <div className="flex flex-col items-start w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white p-8">
       {!showAddForm && (
         <button
@@ -90,7 +99,9 @@ function Chapters({ onBack, trainingId }) {
                         {chapter.mandatory ? 'Yes' : 'No'}
                       </td>
                       <td className="px-4 py-3 flex justify-center gap-2">
-                        <button className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm shadow transform hover:scale-105">
+                        <button
+                          onClick={() => setEditingChapter(chapter)}
+                         className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm shadow transform hover:scale-105">
                           Edit
                         </button>
                         <button className="px-2 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm shadow transform hover:scale-105">
@@ -114,7 +125,7 @@ function Chapters({ onBack, trainingId }) {
         />
       )}
     </div>
-  );
+  ));
   
   
 
