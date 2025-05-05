@@ -3,28 +3,45 @@ import AddchapterForm from './AddchapterForm';
 import API_BASE_URL from "../../config";
 import axios from 'axios';
 import EditChapter from './EditChapter';
+import DeleteChapterModal from '../../components/TrainingTabModals/DeleteChapterModal';
 
 
 function Chapters({ onBack, trainingId }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingChapter, setEditingChapter] = useState(null); 
   const [chapters, setChapters] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [chapterToDelete, setChapterToDelete] = useState(null);
 
-  useEffect(() => {
-    const fetchChapters = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/api/admin/training/${trainingId}/chapters`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        setChapters(res.data.chapters);
-      } catch (err) {
-        console.error('Failed to fetch chapters:', err);
-        alert('Error fetching chapters.');
-      }
-    };
+
+const fetchChapters = async () => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/api/admin/training/${trainingId}/chapters`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    setChapters(res.data.chapters);
+  } catch (err) {
+    console.error('Failed to fetch chapters:', err);
+  }
+};
+
+useEffect(() => {
+  fetchChapters();
+}, [trainingId]);
+
+const handleDeleteChapter = async (chapterId) => {
+  try {
+    await axios.delete(`${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapterId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    setShowDeleteModal(false);
+    fetchChapters();  // ✅ list refresh
+  } catch (err) {
+    console.error('Error deleting chapter:', err);
+    setShowDeleteModal(false);
+  }
+};
   
-    fetchChapters();
-  }, [trainingId]);
   
 
 
@@ -51,12 +68,22 @@ function Chapters({ onBack, trainingId }) {
         <>
           <div className="flex justify-between items-center w-full mb-4">
             <h1 className="text-3xl font-bold">Chapters for Training</h1>
+            <div className="flex gap-2">
+    <button
+      onClick={() => {
+        fetchChapters();
+      }}
+      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-lg text-white shadow transition transform hover:scale-105"
+    >
+      Refresh
+    </button>
             <button
               onClick={() => setShowAddForm(true)}
               className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white shadow transition transform hover:scale-105"
             >
               Add New Chapter
             </button>
+          </div>
           </div>
   
           <div className="w-full overflow-x-auto rounded-lg shadow-lg">
@@ -110,6 +137,16 @@ function Chapters({ onBack, trainingId }) {
                         <button className="px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-sm shadow transform hover:scale-105">
                           Media
                         </button>
+                        <button
+    onClick={() => {
+      setChapterToDelete(chapter._id);
+      setShowDeleteModal(true);
+    }}
+    
+    className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm shadow transform hover:scale-105"
+  >
+    Delete
+  </button>
                       </td>
                     </tr>
                   ))
@@ -124,8 +161,17 @@ function Chapters({ onBack, trainingId }) {
           trainingId={trainingId}
         />
       )}
-    </div>
-  ));
+
+  {/* ✅ Delete Modal ko return ke end me rakha */}
+  <DeleteChapterModal
+          isOpen={showDeleteModal}
+          onConfirm={() => handleDeleteChapter(chapterToDelete)}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      </div>
+  )
+
+);
   
   
 
