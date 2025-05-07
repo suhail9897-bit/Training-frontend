@@ -5,6 +5,7 @@ import DeleteTrainingModal from "../../components/TrainingTabModals/DeleteTraini
 import EditTrainingModal from "../../components/TrainingTabModals/EditTrainingModal";
 import Chapters from "../Admindashboardbuttons/Chapters";
 import API_BASE_URL from "../../config";
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 function Trainings() {
   const [showForm, setShowForm] = useState(false);
@@ -67,12 +68,15 @@ function Trainings() {
   <button
   onClick={fetchTrainings}
   disabled={loading}
-  className={`px-6 py-3 ${
+  className={`p-3 ${
     loading ? 'opacity-50 cursor-not-allowed' : ''
-  } bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg shadow-xl transition transform hover:scale-105`}
+  } bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-full shadow-xl transition transform hover:scale-110`}
 >
-  {loading ? 'Refreshing...' : 'Refresh'}
+  <ArrowPathIcon
+    className={`h-6 w-6 text-white ${loading ? 'animate-spin' : ''}`}
+  />
 </button>
+
 
     <button
       onClick={() => setShowForm(true)}
@@ -92,9 +96,6 @@ function Trainings() {
                   <th className="py-3 px-4">Title</th>
                   <th className="py-3 px-4">Description</th>
                   <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Subject</th>
-                  <th className="py-3 px-4">Level</th>
-                  <th className="py-3 px-4">Language</th>
                   <th className="py-3 px-4">Action</th>
                 </tr>
               </thead>
@@ -105,9 +106,6 @@ function Trainings() {
                     <td className="py-3 px-4">{training.trainingTitle}</td>
                     <td className="py-3 px-4">{training.description}</td>
                     <td className="py-3 px-4">{training.category}</td>
-                    <td className="py-3 px-4">{training.subject}</td>
-                    <td className="py-3 px-4 capitalize">{training.level}</td>
-                    <td className="py-3 px-4 capitalize">{training.language}</td>
                     <td className="py-3 px-4 flex gap-2">
                       <button
                         onClick={() => handleEditClick(training)}
@@ -121,7 +119,7 @@ function Trainings() {
     setSelectedTraining(training);   // 👈 store selected training
     setShowChapters(true);
   }}
-  className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-white shadow transition transform hover:scale-105 ml-2"
+  className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded transition transform hover:scale-105"
 >
   Chapters
 </button>
@@ -133,7 +131,7 @@ function Trainings() {
                         }}
                         className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded transition transform hover:scale-105"
                       >
-                        Delete
+                        🗑
                       </button>
                     </td>
                   </tr>

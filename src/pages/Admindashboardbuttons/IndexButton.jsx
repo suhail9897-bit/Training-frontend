@@ -265,7 +265,7 @@ const [editingPageNo, setEditingPageNo] = useState('');
               onClick={() =>
                 setShowFormId(showFormId === idx._id ? null : idx._id)
               }
-              className="ml-2 px-2 py-1 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 shadow-lg hover:shadow-xl transform hover:scale-110 transition duration-300 text-black font-bold"
+            className="px-3 py-1 rounded text-xs bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition duration-300"
 
 
             >

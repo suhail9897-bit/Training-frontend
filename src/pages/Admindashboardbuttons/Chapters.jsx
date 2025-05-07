@@ -5,6 +5,7 @@ import axios from 'axios';
 import EditChapter from './EditChapter';
 import DeleteChapterModal from '../../components/TrainingTabModals/DeleteChapterModal';
 import IndexButton from './IndexButton';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 
 
@@ -79,14 +80,13 @@ const handleDeleteChapter = async (chapterId) => {
           <div className="flex justify-between items-center w-full mb-4">
             <h1 className="text-3xl font-bold">Chapters for Training</h1>
             <div className="flex gap-2">
-    <button
-      onClick={() => {
-        fetchChapters();
-      }}
-      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-lg text-white shadow transition transform hover:scale-105"
-    >
-      Refresh
-    </button>
+            <button
+  onClick={fetchChapters}
+  className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-full shadow-xl transition transform hover:scale-110"
+>
+  <ArrowPathIcon className="h-6 w-6 text-white" />
+</button>
+
             <button
               onClick={() => setShowAddForm(true)}
               className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white shadow transition transform hover:scale-105"

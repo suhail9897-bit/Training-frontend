@@ -8,9 +8,6 @@ function AddTrainingForm({ onBack }) {
     trainingTitle: "",
     description: "",
     category: "",
-    subject: "",
-    level: "",
-    language: "",
     duration: "",
     startTime: "",
     endTime: "",
@@ -32,9 +29,6 @@ function AddTrainingForm({ onBack }) {
         trainingTitle: "",
         description: "",
         category: "",
-        subject: "",
-        level: "",
-        language: "",
         duration: "",
         startTime: "",
         endTime: "",
@@ -99,44 +93,7 @@ function AddTrainingForm({ onBack }) {
           />
         </div>
   
-        <div className="flex flex-col">
-          <label className="mb-1 text-sm font-semibold tracking-wide">Subject</label>
-          <input
-            type="text"
-            name="subject"
-            placeholder="Enter Subject"
-            value={formData.subject}
-            onChange={handleChange}
-            className="p-4 rounded-lg bg-[#111827] text-white placeholder-green-400 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
-            required
-          />
-        </div>
-  
-        <div className="flex flex-col">
-          <label className="mb-1 text-sm font-semibold tracking-wide">Level</label>
-          <input
-            type="text"
-            name="level"
-            placeholder="Enter Level"
-            value={formData.level}
-            onChange={handleChange}
-            className="p-4 rounded-lg bg-[#111827] text-white placeholder-green-400 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
-            required
-          />
-        </div>
-  
-        <div className="flex flex-col">
-          <label className="mb-1 text-sm font-semibold tracking-wide">Language</label>
-          <input
-            type="text"
-            name="language"
-            placeholder="Enter Language"
-            value={formData.language}
-            onChange={handleChange}
-            className="p-4 rounded-lg bg-[#111827] text-white placeholder-green-400 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
-            required
-          />
-        </div>
+       
   
         <div className="flex flex-col">
           <label className="mb-1 text-sm font-semibold tracking-wide">Duration of Training (Minutes)</label>

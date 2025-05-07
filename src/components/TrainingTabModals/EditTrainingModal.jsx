@@ -56,34 +56,7 @@ function EditTrainingModal({ training, onClose, onUpdate }) {
               className="w-full p-3 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"/>
           </div>
 
-          {/* Subject */}
-          <div>
-            <label className="block text-sm font-semibold mb-1">Subject</label>
-            <input name="subject" value={formData.subject} onChange={handleChange}
-              className="w-full p-3 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"/>
-          </div>
-
-          {/* Level */}
-          <div>
-            <label className="block text-sm font-semibold mb-1">Level</label>
-            <select name="level" value={formData.level} onChange={handleChange}
-              className="w-full p-3 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition">
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
-
-          {/* Language */}
-          <div>
-            <label className="block text-sm font-semibold mb-1">Language</label>
-            <select name="language" value={formData.language} onChange={handleChange}
-              className="w-full p-3 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition">
-              <option value="English">English</option>
-              <option value="Hindi">Hindi</option>
-              <option value="Spanish">Spanish</option>
-            </select>
-          </div>
+        
 
           {/* Duration */}
           <div>
