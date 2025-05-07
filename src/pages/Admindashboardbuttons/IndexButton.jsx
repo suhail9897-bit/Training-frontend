@@ -190,14 +190,14 @@ const [editingPageNo, setEditingPageNo] = useState('');
                     className="px-3 py-1 rounded text-xs bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition duration-300"
 
                   >
-                    ✏ Edit
+                    ✏ 
                   </button>
                   <button
                     onClick={() => handleDeleteIndex(idx._id)}
                     className="px-3 py-1 rounded text-xs bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 shadow-lg transition duration-300"
 
                   >
-                    🗑 Delete
+                    🗑 
                   </button>
                 </>
               ) : (
@@ -211,14 +211,14 @@ const [editingPageNo, setEditingPageNo] = useState('');
                     className="px-3 py-1 rounded text-xs bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition duration-300"
 
                   >
-                    ✏ Edit
+                    ✏
                   </button>
                   <button
                     onClick={() => handleDeleteSubIndex(idx._id)}
                     className="px-3 py-1 rounded text-xs bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 shadow-lg transition duration-300"
 
                   >
-                    🗑 Delete
+                    🗑
                   </button>
                 </>
               )}
