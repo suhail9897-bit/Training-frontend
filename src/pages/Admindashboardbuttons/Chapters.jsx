@@ -4,6 +4,9 @@ import API_BASE_URL from "../../config";
 import axios from 'axios';
 import EditChapter from './EditChapter';
 import DeleteChapterModal from '../../components/TrainingTabModals/DeleteChapterModal';
+import IndexButton from './IndexButton';
+
+
 
 
 function Chapters({ onBack, trainingId }) {
@@ -12,6 +15,8 @@ function Chapters({ onBack, trainingId }) {
   const [chapters, setChapters] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 const [chapterToDelete, setChapterToDelete] = useState(null);
+const [showIndex, setShowIndex] = useState(false);
+
 
 
 const fetchChapters = async () => {
@@ -47,6 +52,11 @@ const handleDeleteChapter = async (chapterId) => {
 
 
   return (
+
+    showIndex ? (
+      <IndexButton onBack={() => setShowIndex(false)} chapter={showIndex} trainingId={trainingId} />
+
+    ) : (
 
     editingChapter ? (
       <EditChapter chapter={editingChapter} trainingId={trainingId} onBack={() => setEditingChapter(null)} />
@@ -131,7 +141,9 @@ const handleDeleteChapter = async (chapterId) => {
                          className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm shadow transform hover:scale-105">
                           Edit
                         </button>
-                        <button className="px-2 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm shadow transform hover:scale-105">
+                        <button 
+                         onClick={() => setShowIndex(chapter)}
+                        className="px-2 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm shadow transform hover:scale-105">
                           Index
                         </button>
                         <button className="px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-sm shadow transform hover:scale-105">
@@ -169,7 +181,7 @@ const handleDeleteChapter = async (chapterId) => {
           onCancel={() => setShowDeleteModal(false)}
         />
       </div>
-  )
+  ))
 
 );
   
