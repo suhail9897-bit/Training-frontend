@@ -100,15 +100,18 @@ const [selectedChapterId, setSelectedChapterId] = useState('');
     </div>
   
     {showForm && (
-      <form onSubmit={handleSubmit} className="w-full max-w-3xl space-y-4">
-        <div className="flex gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md space-y-4 bg-[#1f1f1f] p-6 rounded-lg shadow-lg"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
             type="text"
             name="name"
             placeholder="Name"
             value={formData.name}
             onChange={handleChange}
-            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
           <input
@@ -117,18 +120,19 @@ const [selectedChapterId, setSelectedChapterId] = useState('');
             placeholder="Description"
             value={formData.description}
             onChange={handleChange}
-            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
         </div>
-        <div className="flex gap-4">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
             type="text"
             name="dependentChapter"
             placeholder="Dependent Chapter"
             value={formData.dependentChapter}
             onChange={handleChange}
-            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="number"
@@ -136,30 +140,34 @@ const [selectedChapterId, setSelectedChapterId] = useState('');
             placeholder="Duration (minutes)"
             value={formData.duration}
             onChange={handleChange}
-            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+            min="1"
+            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
         </div>
+
         <select
           name="mandatory"
           value={formData.mandatory}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-[#2a2a2a]"
+          className="w-full p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
           required
         >
           <option value="true">Yes</option>
           <option value="false">No</option>
         </select>
+
         <input
           type="file"
           accept=".pdf"
           onChange={handleFileChange}
-          className="w-full p-2 rounded bg-[#2a2a2a] text-white"
+          className="w-full p-2 rounded bg-[#2a2a2a] text-white focus:outline-none focus:ring-2 focus:ring-green-500"
           required
         />
+
         <button
           type="submit"
-          className="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded text-white"
+          className="w-full py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white font-semibold transition transform hover:scale-105"
         >
           Save Chapter
         </button>
