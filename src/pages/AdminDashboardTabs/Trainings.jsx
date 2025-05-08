@@ -6,6 +6,8 @@ import EditTrainingModal from "../../components/TrainingTabModals/EditTrainingMo
 import Chapters from "../Admindashboardbuttons/Chapters";
 import API_BASE_URL from "../../config";
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { VideoCameraIcon } from '@heroicons/react/24/solid';
+
 
 function Trainings() {
   const [showForm, setShowForm] = useState(false);
@@ -15,6 +17,9 @@ function Trainings() {
   const [selectedTraining, setSelectedTraining] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showChapters, setShowChapters] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+const [selectedVideoUrl, setSelectedVideoUrl] = useState('');
+
 
   
 
@@ -95,6 +100,7 @@ function Trainings() {
                   <th className="py-3 px-4">Training ID</th>
                   <th className="py-3 px-4">Title</th>
                   <th className="py-3 px-4">Description</th>
+                  <th className="py-3 px-4">Attachments</th>
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Action</th>
                 </tr>
@@ -105,7 +111,25 @@ function Trainings() {
                     <td className="py-3 px-4">{training.trainingId}</td>
                     <td className="py-3 px-4">{training.trainingTitle}</td>
                     <td className="py-3 px-4">{training.description}</td>
+                    <td className="py-3 px-4">
+  {training.videoPath ? (
+  <button
+  onClick={() => {
+    setSelectedVideoUrl(`${API_BASE_URL}${training.videoPath}`);
+    setShowVideoModal(true);
+  }}
+  className="p-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full shadow-md transition transform hover:scale-110"
+>
+  <VideoCameraIcon className="h-5 w-5" />
+</button>
+
+  ) : (
+    <span className="text-gray-500">No Video</span>
+  )}
+</td>
+
                     <td className="py-3 px-4">{training.category}</td>
+                    
                     <td className="py-3 px-4 flex gap-2">
                       <button
                         onClick={() => handleEditClick(training)}
@@ -138,6 +162,24 @@ function Trainings() {
                 ))}
               </tbody>
             </table>
+
+            {showVideoModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div className="bg-[#1a1a1a] p-4 rounded-lg shadow-lg w-[90%] max-w-2xl">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-xl font-bold">Training Video</h2>
+        <button
+          onClick={() => setShowVideoModal(false)}
+          className="text-white text-xl hover:text-red-500"
+        >
+          ×
+        </button>
+      </div>
+      <video src={selectedVideoUrl} controls className="w-full rounded-lg" />
+    </div>
+  </div>
+)}
+
   
             {trainings.length === 0 && (
               <p className="text-center text-gray-400 py-6">
