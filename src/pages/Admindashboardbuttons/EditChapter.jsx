@@ -2,8 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import API_BASE_URL from "../../config";
+import IndexButton from './IndexButton';
 
-const EditChapter = ({ chapter, trainingId, onBack }) => {
+const EditChapter = ({ chapter, trainingId, onBack,refreshChapters }) => {
 
     const [name, setName] = useState(chapter.name);
 const [description, setDescription] = useState(chapter.description);
@@ -11,6 +12,10 @@ const [duration, setDuration] = useState(chapter.duration);
 const [dependentChapter, setDependentChapter] = useState(chapter.dependentChapter);
 const [mandatory, setMandatory] = useState(chapter.mandatory);
 const [pdfFile, setPdfFile] = useState(null);
+const [showMeta, setShowMeta] = useState(true);
+const [showIndex, setShowIndex] = useState(false);
+
+
 
 const handleTextUpdate = async () => {
     try {
@@ -20,6 +25,7 @@ const handleTextUpdate = async () => {
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       alert('Chapter text updated successfully!');
+      refreshChapters();
     } catch (err) {
       console.error('Error updating chapter:', err);
       alert('Failed to update chapter text');
@@ -40,6 +46,7 @@ const handleTextUpdate = async () => {
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'multipart/form-data' } }
       );
       alert('PDF replaced successfully!');
+      refreshChapters();
     } catch (err) {
       console.error('Error replacing PDF:', err);
       alert('Failed to replace PDF');
@@ -50,96 +57,139 @@ const handleTextUpdate = async () => {
   
 
   return (
-    <div className="flex flex-col items-center justify-start w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white px-4 py-8 relative">
-      <button
-        onClick={onBack}
-        className="absolute top-8 left-4 sm:left-8 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg shadow-lg text-sm sm:text-base text-white transition transform hover:scale-105"
-      >
-        ← Back
-      </button>
-  
-      <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center break-words">
-        Editing Chapter: {chapter.name}
-      </h2>
-  
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full max-w-3xl lg:max-w-4xl">
-        <div>
-          <label className="block mb-1 text-green-400 text-sm sm:text-base">Name:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 sm:p-2.5 rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 text-green-400 text-sm sm:text-base">Duration:</label>
-          <input
-            type="number"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            className="w-full p-2 sm:p-2.5 rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 text-green-400 text-sm sm:text-base">Description:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-2 sm:p-2.5 rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 text-green-400 text-sm sm:text-base">Dependent Chapter:</label>
-          <input
-            type="text"
-            value={dependentChapter}
-            onChange={(e) => setDependentChapter(e.target.value)}
-            className="w-full p-2 sm:p-2.5 rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
-          />
-        </div>
-        <div className="col-span-1 md:col-span-2 flex items-center">
-          <input
-            type="checkbox"
-            checked={mandatory}
-            onChange={(e) => setMandatory(e.target.checked)}
-            className="mr-2 accent-green-500"
-          />
-          <span className="text-green-300 text-sm sm:text-base">Mandatory</span>
-        </div>
+    <div className="flex flex-col items-center justify-start w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white px-4 py-6">
+      <div className="flex gap-4 mb-4">
+        <button
+          onClick={onBack}
+          className="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded-md shadow text-sm font-medium"
+        >
+          ← Back
+        </button>
+        <button
+          onClick={() => {
+            setShowMeta(true);
+            setShowIndex(false);
+          }}
+          className="px-3 py-1.5 bg-green-600 hover:bg-green-500 rounded-md shadow text-sm font-medium"
+        >
+          Edit Meta Data
+        </button>
+        <button
+          onClick={() => {
+            setShowMeta(false);
+            setShowIndex(true);
+          }}
+          className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-500 rounded-md shadow text-sm font-medium"
+        >
+          Update Index
+        </button>
       </div>
   
-      <button
-        onClick={handleTextUpdate}
-        className="w-full max-w-3xl lg:max-w-4xl mt-6 px-4 py-2.5 sm:py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg shadow-lg text-white font-semibold transition transform hover:scale-105 text-sm sm:text-base"
-      >
-        Update Text Fields
-      </button>
+      {showMeta && (
+        <div className="flex flex-col items-center justify-start w-full max-w-lg bg-[#121212] text-white px-4 py-4">
+          <h2 className="text-lg font-semibold mb-4 text-center">
+            Editing Chapter: {chapter.name}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+            <div>
+              <label className="block text-xs text-green-400 mb-1">Name:</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-1 rounded text-black text-xs"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-green-400 mb-1">Duration:</label>
+              <input
+                type="number"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="w-full p-1 rounded text-black text-xs"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-green-400 mb-1">Description:</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full p-1 rounded text-black text-xs"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-green-400 mb-1">Dependent Chapter:</label>
+              <input
+                type="text"
+                value={dependentChapter}
+                onChange={(e) => setDependentChapter(e.target.value)}
+                className="w-full p-1 rounded text-black text-xs"
+              />
+            </div>
+            <div className="col-span-1 md:col-span-2 flex items-center mt-1">
+              <input
+                type="checkbox"
+                checked={mandatory}
+                onChange={(e) => setMandatory(e.target.checked)}
+                className="mr-1"
+              />
+              <span className="text-green-300 text-xs">Mandatory</span>
+            </div>
+          </div>
   
-      <hr className="my-6 border-gray-600 w-full max-w-3xl lg:max-w-4xl" />
+          <button
+            onClick={handleTextUpdate}
+            className="mt-4 w-full py-1.5 bg-green-600 hover:bg-green-500 rounded text-white text-xs font-medium"
+          >
+            Update Text Fields
+          </button>
   
-      <div className="w-full max-w-3xl lg:max-w-4xl">
-        <label className="block mb-1 text-green-400 text-sm sm:text-base">Replace PDF:</label>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(e) => setPdfFile(e.target.files[0])}
-          className="w-full p-2 sm:p-2.5 bg-[#2a2a2a] rounded text-white text-sm sm:text-base"
-        />
-      </div>
+          <hr className="my-4 border-gray-600 w-full" />
   
-      <button
-        onClick={handlePdfReplace}
-        className="w-full max-w-3xl lg:max-w-4xl mt-4 px-4 py-2.5 sm:py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 rounded-lg shadow-lg text-black font-semibold transition transform hover:scale-105 text-sm sm:text-base"
-      >
-        Replace PDF
-      </button>
+          <div className="w-full">
+            <label className="block text-xs text-green-400 mb-1">Replace PDF:</label>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => setPdfFile(e.target.files[0])}
+              className="w-full p-1 bg-[#2a2a2a] rounded text-white text-xs"
+            />
+          </div>
+  
+          <button
+            onClick={handlePdfReplace}
+            className="mt-3 w-full py-1.5 bg-yellow-600 hover:bg-yellow-500 rounded text-black text-xs font-medium"
+          >
+            Replace PDF
+          </button>
+        </div>
+      )}
+  
+      {showIndex && (
+        <div className="w-full max-w-lg">
+          <IndexButton
+            onBack={() => {
+              setShowIndex(false);
+              setShowMeta(true);
+            }}
+            trainingId={trainingId}
+            chapter={chapter}
+          />
+        </div>
+      )}
     </div>
   );
   
+  
+
+
+
   
   
   };
   
 
 export default EditChapter;
+
+
+

@@ -70,7 +70,7 @@ function Trainings() {
   disabled={loading}
   className={`p-3 ${
     loading ? 'opacity-50 cursor-not-allowed' : ''
-  } bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-full shadow-xl transition transform hover:scale-110`}
+  } bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-full shadow-xl transition transform hover:scale-110`}
 >
   <ArrowPathIcon
     className={`h-6 w-6 text-white ${loading ? 'animate-spin' : ''}`}
@@ -80,7 +80,7 @@ function Trainings() {
 
     <button
       onClick={() => setShowForm(true)}
-      className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-lg shadow-xl transition transform hover:scale-105"
+      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg shadow-xl transition transform hover:scale-105"
     >
       Add Training
     </button>

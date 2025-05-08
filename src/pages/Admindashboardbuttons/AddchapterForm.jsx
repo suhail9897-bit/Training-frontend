@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import API_BASE_URL from "../../config";
+import IndexButton from './IndexButton';
 
-function AddchapterForm({ onBack, trainingId }) {
+
+function AddchapterForm({ onBack, trainingId,  chapters, refreshChapters }) {
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -12,9 +15,11 @@ function AddchapterForm({ onBack, trainingId }) {
     mandatory: 'false',
   });
 
-  useEffect(() => {
-    console.log("AddchapterForm.jsx → received trainingId:", trainingId);
-  }, [trainingId]);
+  const [showIndexSection, setShowIndexSection] = useState(false);
+const [selectedChapterId, setSelectedChapterId] = useState('');
+
+  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,7 +41,6 @@ function AddchapterForm({ onBack, trainingId }) {
       data.append('pdf', formData.pdf);
       data.append('mandatory', formData.mandatory);
 
-
       const response = await axios.post(
         `${API_BASE_URL}/api/admin/training/${trainingId}/chapter`,
         data,
@@ -49,7 +53,16 @@ function AddchapterForm({ onBack, trainingId }) {
       );
 
       alert('Chapter added successfully!');
-      onBack();
+      setFormData({
+        name: '',
+        description: '',
+        dependentChapter: '',
+        duration: '',
+        pdf: null,
+        mandatory: 'false',
+      });
+      refreshChapters();
+
     } catch (err) {
       console.error("API Error:", err);
       alert('Error adding chapter: ' + (err?.response?.data?.message || err.message));
@@ -57,109 +70,127 @@ function AddchapterForm({ onBack, trainingId }) {
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white p-8 flex justify-center">
-  <div className="w-full max-w-4xl">
-
+    <div className="w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white p-8 flex flex-col items-center">
+    <div className="flex gap-4 mb-6">
       <button
         onClick={onBack}
-        className="mb-6 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg text-white shadow transition transform hover:scale-105"
+        className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg text-white shadow transition transform hover:scale-105"
       >
         ← Back
       </button>
+      <button
+          onClick={() => {
+            setShowForm(true);
+            setShowIndexSection(false);
+          }}
+        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-lg text-white shadow transition transform hover:scale-105"
+      >
+        Meta data
+      </button>
+      <button
+       onClick={() => {
+        setShowForm(false);
+        setShowIndexSection(true);
+      }}
+        
+        className="px-4 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 rounded-lg text-white shadow transition transform hover:scale-105"
+      >
+        Index
+      </button>
+    </div>
   
-      <h1 className="text-4xl font-bold mb-8">Add New Chapter</h1>
-  
-      <form onSubmit={handleSubmit} className="max-w-6xl space-y-6">
-        {/* ROW 1 */}
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <label className="block text-sm mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
-          <div className="flex-1">
-            <label className="block text-sm mb-1">Description</label>
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
-        </div>
-  
-        {/* ROW 2 */}
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <label className="block text-sm mb-1">Dependent Chapter</label>
-            <input
-              type="text"
-              name="dependentChapter"
-              value={formData.dependentChapter}
-              onChange={handleChange}
-              className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-          <div className="flex-1">
-            <label className="block text-sm mb-1">Duration (in minutes)</label>
-            <input
-              type="number"
-              name="duration"
-              value={formData.duration}
-              onChange={handleChange}
-              className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            />
-          </div>
-        </div>
-                {/* ROW 3 (Mandatory Select) */}
-        <div>
-        <label className="block text-sm mb-1">Mandatory</label>
-        <select
-            name="mandatory"
-            value={formData.mandatory}
-            onChange={handleChange}
-            className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-        >
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
-        </div>
-
-  
-        {/* ROW 4 (PDF Upload) */}
-        <div>
-          <label className="block text-sm mb-1">Upload PDF</label>
+    {showForm && (
+      <form onSubmit={handleSubmit} className="w-full max-w-3xl space-y-4">
+        <div className="flex gap-4">
           <input
-            type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
-            className="w-full p-3 rounded-lg bg-[#2a2a2a] text-white"
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={formData.name}
+            onChange={handleChange}
+            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+            required
+          />
+          <input
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            className="flex-1 p-2 rounded bg-[#2a2a2a]"
             required
           />
         </div>
-  
+        <div className="flex gap-4">
+          <input
+            type="text"
+            name="dependentChapter"
+            placeholder="Dependent Chapter"
+            value={formData.dependentChapter}
+            onChange={handleChange}
+            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+          />
+          <input
+            type="number"
+            name="duration"
+            placeholder="Duration (minutes)"
+            value={formData.duration}
+            onChange={handleChange}
+            className="flex-1 p-2 rounded bg-[#2a2a2a]"
+            required
+          />
+        </div>
+        <select
+          name="mandatory"
+          value={formData.mandatory}
+          onChange={handleChange}
+          className="w-full p-2 rounded bg-[#2a2a2a]"
+          required
+        >
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={handleFileChange}
+          className="w-full p-2 rounded bg-[#2a2a2a] text-white"
+          required
+        />
         <button
           type="submit"
-          className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white shadow transition transform hover:scale-105"
+          className="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded text-white"
         >
           Save Chapter
         </button>
       </form>
-    </div>
-    </div>
+    )}
+
+{showIndexSection && (
+  <>
+    <select
+      value={selectedChapterId}
+      onChange={(e) => setSelectedChapterId(e.target.value)}
+      className="p-1 rounded bg-[#2a2a2a] "
+    >
+      <option value="">Select Chapter</option>
+      {chapters.map((ch) => (
+        <option key={ch._id} value={ch._id}>{ch.name}</option>
+      ))}
+    </select>
+
+    {selectedChapterId && (
+      <IndexButton
+        onBack={() => setShowIndexSection(false)}
+        trainingId={trainingId}
+        chapter={chapters.find((ch) => ch._id === selectedChapterId)}
+      />
+    )}
+  </>
+)}
+  </div>
+  
   );
-  
-  
 }
 
 export default AddchapterForm;

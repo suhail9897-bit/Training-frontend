@@ -242,6 +242,7 @@ const [editingPageNo, setEditingPageNo] = useState('');
       onChange={(e) => setEditingPageNo(e.target.value)}
       className="w-full mb-1 p-1 rounded bg-gray-700"
       placeholder="New page no"
+      min="1"
       required
     />
     <button
@@ -282,7 +283,7 @@ const [editingPageNo, setEditingPageNo] = useState('');
             >
               <input
                 type="text"
-                placeholder="SubIndex Name"
+                placeholder="SubTopic Name"
                 value={subIndexName}
                 onChange={(e) => setSubIndexName(e.target.value)}
                 className="w-full mb-1 p-1 rounded bg-[#2a2a2a]"
@@ -291,6 +292,7 @@ const [editingPageNo, setEditingPageNo] = useState('');
               <input
                 type="number"
                 placeholder="PDF Page No"
+                min="1"
                 value={subIndexPageNo}
                 onChange={(e) => setSubIndexPageNo(e.target.value)}
                 className="w-full mb-1 p-1 rounded bg-[#2a2a2a]"
@@ -349,41 +351,36 @@ const [editingPageNo, setEditingPageNo] = useState('');
 
   return (
     <div className="p-8 text-white">
-      <button
-        onClick={onBack}
-        className="mb-4 px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 rounded shadow-lg text-white transition duration-300"
+     
 
-      >
-        ← Back
-      </button>
+     <h1 className="text-lg font-semibold mb-3">Indexes for {chapter.name}</h1>
 
-      <h1 className="text-2xl font-bold mb-4">Indexes for {chapter.name}</h1>
+{/* ✅ Add new index form (resized smaller) */}
+<form onSubmit={handleAddIndex} className="mb-4 space-y-1">
+  <input
+    type="text"
+    placeholder="Topic Name"
+    value={newIndex.name}
+    onChange={(e) => setNewIndex({ ...newIndex, name: e.target.value })}
+    className="bg-[#2a2a2a] px-2 py-1 rounded w-full text-sm"
+  />
+  <input
+    type="number"
+    placeholder="Page Number"
+    min="1"
+    value={newIndex.pageNo}
+    onChange={(e) => setNewIndex({ ...newIndex, pageNo: e.target.value })}
+    className="bg-[#2a2a2a] px-2 py-1 rounded w-full text-sm"
+  />
+  <button
+    type="submit"
+    disabled={loading}
+    className="px-3 py-1 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 rounded shadow text-xs text-white transition duration-300"
+  >
+    {loading ? 'Adding...' : 'Add Topic'}
+  </button>
+</form>
 
-      {/* ✅ Add new index form */}
-      <form onSubmit={handleAddIndex} className="mb-6 space-y-2">
-        <input
-          type="text"
-          placeholder="Topic Name"
-          value={newIndex.name}
-          onChange={(e) => setNewIndex({ ...newIndex, name: e.target.value })}
-          className="bg-[#2a2a2a] px-4 py-2 rounded w-full"
-        />
-        <input
-          type="number"
-          placeholder="Page Number"
-          value={newIndex.pageNo}
-          onChange={(e) => setNewIndex({ ...newIndex, pageNo: e.target.value })}
-          className="bg-[#2a2a2a] px-4 py-2 rounded w-full"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 rounded shadow-lg text-white transition duration-300"
-
-        >
-          {loading ? 'Adding...' : 'Add Topic'}
-        </button>
-      </form>
 
       {/* ✅ Indexes list */}
       {indexes.length === 0 ? (

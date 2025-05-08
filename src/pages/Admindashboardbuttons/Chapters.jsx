@@ -60,7 +60,7 @@ const handleDeleteChapter = async (chapterId) => {
     ) : (
 
     editingChapter ? (
-      <EditChapter chapter={editingChapter} trainingId={trainingId} onBack={() => setEditingChapter(null)} />
+      <EditChapter chapter={editingChapter} trainingId={trainingId} onBack={() => setEditingChapter(null)}  refreshChapters={fetchChapters} />
 
     ) : (
     
@@ -82,14 +82,14 @@ const handleDeleteChapter = async (chapterId) => {
             <div className="flex gap-2">
             <button
   onClick={fetchChapters}
-  className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-full shadow-xl transition transform hover:scale-110"
+  className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-full shadow-xl transition transform hover:scale-110"
 >
   <ArrowPathIcon className="h-6 w-6 text-white" />
 </button>
 
             <button
               onClick={() => setShowAddForm(true)}
-              className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white shadow transition transform hover:scale-105"
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-lg text-white shadow transition transform hover:scale-105"
             >
               Add New Chapter
             </button>
@@ -141,14 +141,8 @@ const handleDeleteChapter = async (chapterId) => {
                          className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm shadow transform hover:scale-105">
                           Edit
                         </button>
-                        <button 
-                         onClick={() => setShowIndex(chapter)}
-                        className="px-2 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded text-sm shadow transform hover:scale-105">
-                          Index
-                        </button>
-                        <button className="px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-sm shadow transform hover:scale-105">
-                          Media
-                        </button>
+                       
+                        
                         <button
     onClick={() => {
       setChapterToDelete(chapter._id);
@@ -157,7 +151,7 @@ const handleDeleteChapter = async (chapterId) => {
     
     className="px-2 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm shadow transform hover:scale-105"
   >
-    Delete
+    🗑
   </button>
                       </td>
                     </tr>
@@ -171,6 +165,8 @@ const handleDeleteChapter = async (chapterId) => {
         <AddchapterForm
           onBack={() => setShowAddForm(false)}
           trainingId={trainingId}
+          chapters={chapters}
+          refreshChapters={fetchChapters}
         />
       )}
 
