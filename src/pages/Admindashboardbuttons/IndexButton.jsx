@@ -2,9 +2,44 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../../config';
 
+
+
+
+function secondsToTimeString(totalSeconds) {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  
+  const pad = (num) => String(num).padStart(2, '0');
+  
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+
+
+
+function timeStringToSeconds(timeStr) {
+  if (!timeStr) return 0;
+  if (typeof timeStr === 'number') return timeStr;
+  const parts = timeStr.split(':').map(Number);
+  if (parts.length === 3) {
+    const [h, m, s] = parts;
+    return (h * 3600) + (m * 60) + s;
+  } else if (parts.length === 2) {
+    const [m, s] = parts;
+    return (m * 60) + s;
+  } else if (parts.length === 1) {
+    return Number(parts[0]);
+  }
+  return 0;
+}
+
+
+
+
 function IndexButton({ onBack, trainingId, chapter }) {
   const [indexes, setIndexes] = useState([]);
-  const [newIndex, setNewIndex] = useState({ name: '', pageNo: '' });
+  const [newIndex, setNewIndex] = useState({ name: '', pageNo: '', videoStartTime: '', videoEndTime: '' });
   const [loading, setLoading] = useState(false);
   const [showFormId, setShowFormId] = useState(null);
 const [subIndexName, setSubIndexName] = useState('');
@@ -12,6 +47,14 @@ const [subIndexPageNo, setSubIndexPageNo] = useState('');
 const [editingId, setEditingId] = useState(null);
 const [editingName, setEditingName] = useState('');
 const [editingPageNo, setEditingPageNo] = useState('');
+const [subIndexVideoStartTime, setSubIndexVideoStartTime] = useState('');
+const [subIndexVideoEndTime, setSubIndexVideoEndTime] = useState('');
+const [editingVideoStartTime, setEditingVideoStartTime] = useState('');
+const [editingVideoEndTime, setEditingVideoEndTime] = useState('');
+
+
+
+
 
 
 
@@ -26,7 +69,13 @@ const [editingPageNo, setEditingPageNo] = useState('');
           },
         }
       );
-      setIndexes(res.data.indexes || []);
+      setIndexes(
+        (res.data.indexes || []).map(idx => ({
+          ...idx,
+          videoStartTime: idx.videoStartTime ?? '',
+          videoEndTime: idx.videoEndTime ?? ''
+        }))
+      );
     } catch (err) {
       console.error('Error fetching indexes:', err);
     }
@@ -126,7 +175,10 @@ const [editingPageNo, setEditingPageNo] = useState('');
         {
           parentIndexId: parentIndexId,
           name: subIndexName,
-          pageNo: subIndexPageNo
+          pageNo: subIndexPageNo,
+          videoStartTime: timeStringToSeconds(subIndexVideoStartTime),   
+          videoEndTime: timeStringToSeconds(subIndexVideoEndTime)        
+      
         },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -150,12 +202,18 @@ const [editingPageNo, setEditingPageNo] = useState('');
         level === 'index'
           ? `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/index/${id}`
           : `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/subindex/${id}`;
-  
-      await axios.put(
-        endpoint,
-        { name: editingName, pageNo: Number(editingPageNo) },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-      );
+          await axios.put(
+            endpoint,
+            { 
+              name: editingName, 
+              pageNo: Number(editingPageNo),
+              videoStartTime: Number.isNaN(timeStringToSeconds(editingVideoStartTime)) ? 0 : timeStringToSeconds(editingVideoStartTime),
+videoEndTime: Number.isNaN(timeStringToSeconds(editingVideoEndTime)) ? 0 : timeStringToSeconds(editingVideoEndTime)
+
+            },
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          );
+          
   
       fetchIndexes();
       setEditingId(null);
@@ -174,7 +232,13 @@ const [editingPageNo, setEditingPageNo] = useState('');
         <li key={idx._id} className="bg-gradient-to-r from-gray-700 to-gray-900 rounded-lg mb-3 p-3 shadow-md hover:shadow-xl transition duration-300">
           <div className="flex items-center justify-between">
 
-            <span>{idx.name} (Page {idx.pageNo})</span>
+          <div className="font-semibold">
+  {idx.name} <span className="text-sm text-gray-400">(Page {idx.pageNo})</span>
+</div>
+<div className="text-sm text-gray-300 ml-4">
+  ⏱ {secondsToTimeString(idx.videoStartTime)} → {secondsToTimeString(idx.videoEndTime)}
+</div>
+
   
             <div className="flex items-center gap-2 ml-auto">
   <div className="flex gap-2">
@@ -185,6 +249,9 @@ const [editingPageNo, setEditingPageNo] = useState('');
                         setEditingId(idx._id);
                         setEditingName(idx.name);
                         setEditingPageNo(idx.pageNo);
+                        setEditingVideoStartTime(secondsToTimeString(idx.videoStartTime || 0));
+                        setEditingVideoEndTime(secondsToTimeString(idx.videoEndTime || 0));
+
                       }}
                       
                     className="px-3 py-1 rounded text-xs bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition duration-300"
@@ -202,11 +269,15 @@ const [editingPageNo, setEditingPageNo] = useState('');
                 </>
               ) : (
                 <>
-                  <button
-                      onClick={() => {
-                        setEditingId(idx._id);
-                        setEditingName(idx.name);
-                        setEditingPageNo(idx.pageNo);
+                 <button
+                 onClick={() => {
+                 setEditingId(idx._id);
+                 setEditingName(idx.name);
+                 setEditingPageNo(idx.pageNo);
+                 setEditingVideoStartTime(secondsToTimeString(idx.videoStartTime || 0));
+                 setEditingVideoEndTime(secondsToTimeString(idx.videoEndTime || 0));
+
+
                       }}
                     className="px-3 py-1 rounded text-xs bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 shadow-lg transition duration-300"
 
@@ -245,6 +316,25 @@ const [editingPageNo, setEditingPageNo] = useState('');
       min="1"
       required
     />
+    <input
+  type="text"
+  value={editingVideoStartTime || ''}
+  onChange={(e) => setEditingVideoStartTime(e.target.value)}
+  className="w-full mb-1 p-1 rounded bg-gray-700"
+  placeholder="Video End Time (HH:MM:SS)"
+  
+/>
+<input
+  type="text"
+  value={editingVideoEndTime || ''}
+  onChange={(e) => setEditingVideoEndTime(e.target.value)}
+  className="w-full mb-1 p-1 rounded bg-gray-700"
+  placeholder="Video End Time (HH:MM:SS)"
+  
+/>
+
+
+    
     <button
       type="submit"
       className="px-4 py-1 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 rounded shadow-lg text-sm transition duration-300"
@@ -275,7 +365,7 @@ const [editingPageNo, setEditingPageNo] = useState('');
           </div>
           </div>
   
-          {/* Form toggle */}
+          {/* sub-index Form toggle */}
           {showFormId === idx._id && (
             <form
               onSubmit={(e) => handleAddSubIndex(e, idx._id)}
@@ -298,6 +388,21 @@ const [editingPageNo, setEditingPageNo] = useState('');
                 className="w-full mb-1 p-1 rounded bg-[#2a2a2a]"
                 required
               />
+              <input
+  type="text"
+  placeholder="Video End Time (HH:MM:SS)"
+  value={subIndexVideoStartTime || ''}
+  onChange={(e) => setSubIndexVideoStartTime(e.target.value)}
+  className="w-full mb-1 p-1 rounded bg-gray-700"
+/>
+<input
+  type="text"
+  placeholder="Video End Time (HH:MM:SS)"
+  value={subIndexVideoEndTime || ''}
+  onChange={(e) => setSubIndexVideoEndTime(e.target.value)}
+  className="w-full mb-1 p-1 rounded bg-gray-700"
+/>
+
               <button
                 type="submit"
                 className="px-4 py-1 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 rounded shadow-lg text-sm transition duration-300"
@@ -332,14 +437,20 @@ const [editingPageNo, setEditingPageNo] = useState('');
       setLoading(true);
       await axios.post(
         `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/index`,
-        newIndex,
+        {
+          ...newIndex,
+          videoStartTime: timeStringToSeconds(newIndex.videoStartTime),
+          videoEndTime: timeStringToSeconds(newIndex.videoEndTime)
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
-      setNewIndex({ name: '', pageNo: '' });  // reset form
+      
+      setNewIndex({ name: '', pageNo: '',  videoStartTime: '00:00:00', videoEndTime: '00:00:00' });
+  // reset form
       fetchIndexes();  // refresh list
     } catch (err) {
       console.error('Error adding index:', err);
@@ -372,6 +483,23 @@ const [editingPageNo, setEditingPageNo] = useState('');
     onChange={(e) => setNewIndex({ ...newIndex, pageNo: e.target.value })}
     className="bg-[#2a2a2a] px-2 py-1 rounded w-full text-sm"
   />
+  
+  <input
+  type="text"
+  placeholder="Video Start Time (HH:MM:SS)"
+  value={newIndex.videoStartTime || ''}
+  onChange={(e) => setNewIndex({ ...newIndex, videoStartTime: e.target.value })}
+  className="bg-[#2a2a2a] px-2 py-1 rounded w-full text-sm"
+/>
+<input
+  type="text"
+  placeholder="Video End Time (HH:MM:SS)"
+  value={newIndex.videoEndTime || ''}
+  onChange={(e) => setNewIndex({ ...newIndex, videoEndTime: e.target.value })}
+  className="bg-[#2a2a2a] px-2 py-1 rounded w-full text-sm"
+/>
+
+
   <button
     type="submit"
     disabled={loading}

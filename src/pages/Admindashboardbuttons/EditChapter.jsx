@@ -166,7 +166,7 @@ const handleTextUpdate = async () => {
       )}
   
       {showIndex && (
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-2xl">
           <IndexButton
             onBack={() => {
               setShowIndex(false);
