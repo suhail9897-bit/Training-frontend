@@ -170,6 +170,13 @@ const [editingVideoEndTime, setEditingVideoEndTime] = useState('');
   const handleAddSubIndex = async (e, parentIndexId) => {
     e.preventDefault();
     try {
+      const startSeconds = timeStringToSeconds(subIndexVideoStartTime);
+const endSeconds = timeStringToSeconds(subIndexVideoEndTime);
+if (endSeconds <= startSeconds) {
+  alert('End time must be greater than start time');
+  return;
+}
+
       await axios.post(
         `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/add-subindex`,
         {
@@ -202,6 +209,14 @@ const [editingVideoEndTime, setEditingVideoEndTime] = useState('');
         level === 'index'
           ? `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/index/${id}`
           : `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/subindex/${id}`;
+
+          const startSeconds = timeStringToSeconds(editingVideoStartTime);
+const endSeconds = timeStringToSeconds(editingVideoEndTime);
+if (endSeconds <= startSeconds) {
+  alert('End time must be greater than start time');
+  return;
+}
+
           await axios.put(
             endpoint,
             { 
@@ -435,6 +450,13 @@ videoEndTime: Number.isNaN(timeStringToSeconds(editingVideoEndTime)) ? 0 : timeS
     }
     try {
       setLoading(true);
+      const startSeconds = timeStringToSeconds(newIndex.videoStartTime);
+const endSeconds = timeStringToSeconds(newIndex.videoEndTime);
+if (endSeconds <= startSeconds) {
+  alert('End time must be greater than start time');
+  return;
+}
+
       await axios.post(
         `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/index`,
         {

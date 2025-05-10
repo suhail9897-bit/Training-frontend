@@ -145,7 +145,9 @@ const [selectedChapterId, setSelectedChapterId] = useState('');
             required
           />
         </div>
-
+        <label className="block mb-1 text-sm text-gray-400 ">
+  Mandatory <span style={{ color: 'red' }}>*</span>
+</label>
         <select
           name="mandatory"
           value={formData.mandatory}
