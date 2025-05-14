@@ -3,17 +3,38 @@ import { useState } from 'react';
 import axios from 'axios';
 import API_BASE_URL from "../../config";
 import IndexButton from './IndexButton';
+import LinkTest from './LinkTest';
+import EditDependencies from './EditDependencies';
 
-const EditChapter = ({ chapter, trainingId, onBack,refreshChapters }) => {
+
+
+
+
+const EditChapter = ({ chapter, trainingId,chapters, onBack,refreshChapters }) => {
 
     const [name, setName] = useState(chapter.name);
 const [description, setDescription] = useState(chapter.description);
 const [duration, setDuration] = useState(chapter.duration);
-const [dependentChapter, setDependentChapter] = useState(chapter.dependentChapter);
-const [mandatory, setMandatory] = useState(chapter.mandatory);
+
 const [pdfFile, setPdfFile] = useState(null);
 const [showMeta, setShowMeta] = useState(true);
 const [showIndex, setShowIndex] = useState(false);
+const [showLinkTest, setShowLinkTest] = useState(false);
+const [showSetDeps, setShowSetDeps] = useState(false);
+const [linkedTestId, setLinkedTestId] = useState(chapter.linkedTestId || '');
+const [localChapter, setLocalChapter] = useState(chapter); // ← mutable copy
+
+
+
+const baseButtonStyle = "px-4 py-2 rounded-lg text-white shadow transition transform hover:scale-105";
+const activeStyle = "bg-blue-900";
+const inactiveStyle = "bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blue-700 hover:to-blue-800";
+
+
+
+
+
+
 
 
 
@@ -21,7 +42,7 @@ const handleTextUpdate = async () => {
     try {
       const response = await axios.put(
         `${API_BASE_URL}/api/admin/training/${trainingId}/chapter/${chapter._id}/update`,
-        { name, description, duration, dependentChapter, mandatory },
+        { name, description, duration },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       alert('Chapter text updated successfully!');
@@ -69,27 +90,61 @@ const handleTextUpdate = async () => {
           onClick={() => {
             setShowMeta(true);
             setShowIndex(false);
+            setShowLinkTest(false);
+            setShowSetDeps(false); 
           }}
-          className="px-3 py-1.5 bg-green-600 hover:bg-green-500 rounded-md shadow text-sm font-medium"
-        >
+          className={`${baseButtonStyle} ${showMeta ? activeStyle : inactiveStyle}`}
+>
           Edit Meta Data
         </button>
         <button
           onClick={() => {
             setShowMeta(false);
             setShowIndex(true);
+            setShowLinkTest(false);
+            setShowSetDeps(false); 
           }}
-          className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-500 rounded-md shadow text-sm font-medium"
-        >
+          className={`${baseButtonStyle} ${showIndex ? activeStyle : inactiveStyle}`}
+>
           Update Index
         </button>
+        <button
+  onClick={() => {
+    setShowMeta(false);
+    setShowIndex(false);
+    setShowLinkTest(true);
+    setShowSetDeps(false); 
+  }}
+  className={`${baseButtonStyle} ${showLinkTest ? activeStyle : inactiveStyle}`}
+>
+  Link Test
+</button>
+
+<button
+  onClick={() => {
+    setShowMeta(false);
+    setShowIndex(false);
+    setShowLinkTest(false);
+    setShowSetDeps(true); // ← Here
+  }}
+  className={`${baseButtonStyle} ${showSetDeps ? activeStyle : inactiveStyle}`}
+>
+    Edit Dependencies
+  </button>
+  
+
+
+
       </div>
+
+      <h2 className="text-xl font-semibold text-green-400 mb-4">
+  Currently Editing: <span className="text-white">{chapter.name}</span>
+</h2>
+
   
       {showMeta && (
         <div className="flex flex-col items-center justify-start w-full max-w-lg bg-[#121212] text-white px-4 py-4">
-          <h2 className="text-lg font-semibold mb-4 text-center">
-            Editing Chapter: {chapter.name}
-          </h2>
+         
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
             <div>
               <label className="block text-xs text-green-400 mb-1">Name:</label>
@@ -117,24 +172,7 @@ const handleTextUpdate = async () => {
                 className="w-full p-1 rounded text-black text-xs"
               />
             </div>
-            <div>
-              <label className="block text-xs text-green-400 mb-1">Dependent Chapter:</label>
-              <input
-                type="text"
-                value={dependentChapter}
-                onChange={(e) => setDependentChapter(e.target.value)}
-                className="w-full p-1 rounded text-black text-xs"
-              />
-            </div>
-            <div className="col-span-1 md:col-span-2 flex items-center mt-1">
-              <input
-                type="checkbox"
-                checked={mandatory}
-                onChange={(e) => setMandatory(e.target.checked)}
-                className="mr-1"
-              />
-              <span className="text-green-300 text-xs">Mandatory</span>
-            </div>
+           
           </div>
   
           <button
@@ -177,15 +215,47 @@ const handleTextUpdate = async () => {
           />
         </div>
       )}
+
+{showLinkTest && (
+  <div className="w-full max-w-2xl">
+  <LinkTest
+    key={chapter._id + (chapter.linkedTestId || '')}
+  trainingId={trainingId}
+  chapters={[localChapter]}
+  fixedChapterId={chapter._id}  // 👈 pass fixed chapter
+  initialLinkedTestId={linkedTestId}
+  onTestLinked={(newId) => {
+    const updated = { ...localChapter, linkedTestId: newId };
+    setLocalChapter(updated);
+    setLinkedTestId(newId);
+    refreshChapters(); // so other views also update
+  }}
+  onBack={() => {
+    setShowLinkTest(false);
+    setShowMeta(true);
+  }}
+    />
+  </div>
+)}
+
+{showSetDeps && (
+  <div className="w-full max-w-2xl">
+    <EditDependencies
+      trainingId={trainingId}
+      chapterId={chapter._id}
+      chapters={[...chapters]}
+      
+      onBack={() => {
+        setShowSetDeps(false);
+        setShowMeta(true);
+      }}
+    />
+  </div>
+)}
+
     </div>
   );
-  
-  
-
-
-
-  
-  
+   
   };
   
 

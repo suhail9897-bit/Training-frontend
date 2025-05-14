@@ -1,33 +1,30 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import API_BASE_URL from "../../config";
-import IndexButton from './IndexButton';
+import IndexSection from '../../components/ThreeSections/IndexSection';
+import LinkTestSection from '../../components/ThreeSections/LinkTestSection';
+import SetDependenciesSection from '../../components/ThreeSections/SetDependenciesSection';
 
 
-function AddchapterForm({ onBack, trainingId,  chapters, refreshChapters }) {
-  const [showForm, setShowForm] = useState(false);
+function AddchapterForm({ onBack, trainingId, refreshChapters }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    dependentChapter: '',
     duration: '',
     pdf: null,
-    mandatory: 'false',
   });
+  const [chapterSaved, setChapterSaved] = useState(false);
+const [newChapterId, setNewChapterId] = useState(null);
 
-  const [showIndexSection, setShowIndexSection] = useState(false);
-const [selectedChapterId, setSelectedChapterId] = useState('');
-
-  
 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, pdf: e.target.files[0] }));
+    setFormData(prev => ({ ...prev, pdf: e.target.files[0] }));
   };
 
   const handleSubmit = async (e) => {
@@ -36,171 +33,117 @@ const [selectedChapterId, setSelectedChapterId] = useState('');
       const data = new FormData();
       data.append('name', formData.name);
       data.append('description', formData.description);
-      data.append('dependentChapter', formData.dependentChapter);
       data.append('duration', formData.duration);
       data.append('pdf', formData.pdf);
-      data.append('mandatory', formData.mandatory);
 
-      const response = await axios.post(
-        `${API_BASE_URL}/api/admin/training/${trainingId}/chapter`,
-        data,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/admin/training/${trainingId}/chapter`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      // ✅ Get chapterId from response and store it
+      const chapterId = response.data?.chapter?._id;
+      setNewChapterId(chapterId);
+      console.log("Created Chapter ID:", chapterId);
+
+      
 
       alert('Chapter added successfully!');
-      setFormData({
-        name: '',
-        description: '',
-        dependentChapter: '',
-        duration: '',
-        pdf: null,
-        mandatory: 'false',
-      });
+      setFormData({ name: '', description: '', duration: '', pdf: null });
       refreshChapters();
+      setChapterSaved(true);
 
     } catch (err) {
-      console.error("API Error:", err);
-      alert('Error adding chapter: ' + (err?.response?.data?.message || err.message));
+      console.error(err);
+      alert('Failed to add chapter');
     }
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white p-8 flex flex-col items-center">
-    <div className="flex gap-4 mb-6">
-      <button
-        onClick={onBack}
-        className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 rounded-lg text-white shadow transition transform hover:scale-105"
-      >
-        ← Back
-      </button>
-      <button
-          onClick={() => {
-            setShowForm(true);
-            setShowIndexSection(false);
-          }}
-        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-lg text-white shadow transition transform hover:scale-105"
-      >
-        Meta data
-      </button>
-      <button
-       onClick={() => {
-        setShowForm(false);
-        setShowIndexSection(true);
-      }}
-        
-        className="px-4 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 rounded-lg text-white shadow transition transform hover:scale-105"
-      >
-        Index
-      </button>
-    </div>
-  
-    {showForm && (
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md space-y-4 bg-[#1f1f1f] p-6 rounded-lg shadow-lg"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-          <input
-            type="text"
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="dependentChapter"
-            placeholder="Dependent Chapter"
-            value={formData.dependentChapter}
-            onChange={handleChange}
-            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <input
-            type="number"
-            name="duration"
-            placeholder="Duration (minutes)"
-            value={formData.duration}
-            onChange={handleChange}
-            min="1"
-            className="p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
-            required
-          />
-        </div>
-        <label className="block mb-1 text-sm text-gray-400 ">
-  Mandatory <span style={{ color: 'red' }}>*</span>
-</label>
-        <select
-          name="mandatory"
-          value={formData.mandatory}
-          onChange={handleChange}
-          className="w-full p-2 rounded bg-[#2a2a2a] focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        >
-          <option value="true">Yes</option>
-          <option value="false">No</option>
-        </select>
-
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={handleFileChange}
-          className="w-full p-2 rounded bg-[#2a2a2a] text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
-
+    <div className="w-full min-h-[calc(100vh-64px)] bg-[#121212] text-white px-6 pt-6">
+      {/* Back button */}
+      <div className="mb-4">
         <button
-          type="submit"
-          className="w-full py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 rounded-lg text-white font-semibold transition transform hover:scale-105"
+          onClick={onBack}
+          className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm shadow"
         >
-          Save Chapter
+          ← Back
         </button>
-      </form>
-    )}
-
-{showIndexSection && (
-  <>
-    <select
-      value={selectedChapterId}
-      onChange={(e) => setSelectedChapterId(e.target.value)}
-      className="p-1 rounded bg-[#2a2a2a] "
-    >
-      <option value="">Select Chapter</option>
-      {chapters.map((ch) => (
-        <option key={ch._id} value={ch._id}>{ch.name}</option>
-      ))}
-    </select>
-
-    {selectedChapterId && (
-      <IndexButton
-        onBack={() => setShowIndexSection(false)}
-        trainingId={trainingId}
-        chapter={chapters.find((ch) => ch._id === selectedChapterId)}
-      />
-    )}
-  </>
-)}
-  </div>
+      </div>
   
+      {/* Four-section row layout */}
+      <div className="flex gap-4">
+        {/* Meta Data Form */}
+        {/* Meta Data Form */}
+<div className="bg-[#1f1f1f] p-4 rounded shadow w-1/4">
+  <h2 className="text-lg font-semibold text-green-400 mb-4">Meta Data</h2>
+  <form onSubmit={handleSubmit} className="space-y-3">
+    <fieldset disabled={chapterSaved} className="space-y-3">
+      <input
+        type="text"
+        name="name"
+        placeholder="Chapter Name"
+        value={formData.name}
+        onChange={handleChange}
+        className="w-full p-2 bg-[#2a2a2a] rounded"
+        required
+      />
+      <input
+        type="text"
+        name="description"
+        placeholder="Description"
+        value={formData.description}
+        onChange={handleChange}
+        className="w-full p-2 bg-[#2a2a2a] rounded"
+        required
+      />
+      <input
+        type="number"
+        name="duration"
+        placeholder="Duration (minutes)"
+        value={formData.duration}
+        onChange={handleChange}
+        className="w-full p-2 bg-[#2a2a2a] rounded"
+        required
+      />
+      <input
+        type="file"
+        accept=".pdf"
+        onChange={handleFileChange}
+        className="w-full p-2 bg-[#2a2a2a] rounded text-white"
+        required
+      />
+      <button
+        type="submit"
+        className="w-full py-2 bg-green-600 hover:bg-green-700 rounded text-white font-semibold"
+      >
+        Save Chapter
+      </button>
+    </fieldset>
+  </form>
+</div>
+
+  
+        {/* Three other sections */}
+        <div className="w-3/4 grid grid-cols-3 gap-4">
+          <div className={`bg-[#1f1f1f] p-4 rounded shadow ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
+          <IndexSection trainingId={trainingId} chapterId={newChapterId} />
+
+
+          </div>
+          <div className={`bg-[#1f1f1f] p-4 rounded shadow ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
+            <LinkTestSection />
+          </div>
+          <div className={`bg-[#1f1f1f] p-4 rounded shadow ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
+            <SetDependenciesSection />
+          </div>
+        </div>
+      </div>
+    </div>
   );
+  
 }
 
 export default AddchapterForm;

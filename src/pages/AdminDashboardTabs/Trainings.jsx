@@ -19,6 +19,8 @@ function Trainings() {
   const [showChapters, setShowChapters] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
 const [selectedVideoUrl, setSelectedVideoUrl] = useState('');
+const [selectedVideoName, setSelectedVideoName] = useState(''); // ✅ Add this
+
 
 
   
@@ -113,15 +115,18 @@ const [selectedVideoUrl, setSelectedVideoUrl] = useState('');
                     <td className="py-3 px-4">{training.description}</td>
                     <td className="py-3 px-4">
   {training.videoPath ? (
-  <button
-  onClick={() => {
-    setSelectedVideoUrl(`${API_BASE_URL}${training.videoPath}`);
-    setShowVideoModal(true);
-  }}
-  className="p-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full shadow-md transition transform hover:scale-110"
+ <button
+ onClick={() => {
+   setSelectedVideoUrl(`${API_BASE_URL}${training.videoPath}`);
+   const fileName = training.videoPath.split('/').pop(); // ✅ Extract filename
+   setSelectedVideoName(fileName); // ✅ Set it
+   setShowVideoModal(true);
+ }}
+ className="p-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full shadow-md transition transform hover:scale-110"
 >
-  <VideoCameraIcon className="h-5 w-5" />
+ <VideoCameraIcon className="h-5 w-5" />
 </button>
+
 
   ) : (
     <span className="text-gray-500">No Video</span>
@@ -148,26 +153,29 @@ const [selectedVideoUrl, setSelectedVideoUrl] = useState('');
   Chapters
 </button>
 
-                      <button
-                        onClick={() => {
-                          setSelectedTraining(training);
-                          setShowModal(true);
-                        }}
-                        className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded transition transform hover:scale-105"
-                      >
-                        🗑
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+           <button
+            onClick={() => {
+            setSelectedTraining(training);
+             setShowModal(true);
+              }}
+             className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded transition transform hover:scale-105"
+              >
+               🗑
+           </button>
+           </td>
+            </tr>
+            ))}
+           </tbody>
             </table>
 
             {showVideoModal && (
   <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
     <div className="bg-[#1a1a1a] p-4 rounded-lg shadow-lg w-[90%] max-w-2xl">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-bold">Training Video</h2>
+      <h2 className="text-xl font-bold">
+  Training Video <span className="text-sm text-gray-100 ml-2">({selectedVideoName})</span> {/* ✅ Added */}
+</h2>
+
         <button
           onClick={() => setShowVideoModal(false)}
           className="text-white text-xl hover:text-red-500"
@@ -193,11 +201,13 @@ const [selectedVideoUrl, setSelectedVideoUrl] = useState('');
             show={showModal}
             onClose={() => setShowModal(false)}
             onConfirm={handleDelete}
-            trainingName={selectedTraining?.name}
+            trainingId={selectedTraining?.trainingId}
+
           />
         </>
       ) : showForm ? (
-        <AddTrainingForm onBack={() => setShowForm(false)} />
+        <AddTrainingForm onBack={() => setShowForm(false)}
+        refreshTrainings={fetchTrainings} />
       ) : (
         <Chapters onBack={() => setShowChapters(false)} trainingId={selectedTraining?._id} />
 

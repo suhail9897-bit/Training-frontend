@@ -2,7 +2,7 @@ import React from 'react';
 
 
 
-const DeleteTrainingModal = ({ show, onClose, onConfirm, trainingName }) => {
+const DeleteTrainingModal = ({ show, onClose, onConfirm, trainingId }) => {
   if (!show) return null;
 
   return (
@@ -19,7 +19,7 @@ const DeleteTrainingModal = ({ show, onClose, onConfirm, trainingName }) => {
         <h2 className="text-2xl font-bold text-center mb-4 tracking-wide">Confirm Delete</h2>
 
         <p className="text-center text-green-300 mb-6">
-          Are you sure you want to delete <span className="font-semibold text-green-400">"{trainingName}"</span>?
+          Are you sure you want to delete <span className="font-semibold text-gray-100">"{trainingId}"</span>?
         </p>
 
         <div className="flex justify-center gap-4">

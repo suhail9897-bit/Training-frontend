@@ -2,7 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "../../config";
 
-function AddTrainingForm({ onBack }) {
+
+
+function AddTrainingForm({ onBack, refreshTrainings }) {
   const [formData, setFormData] = useState({
     trainingId: "",
     trainingTitle: "",
@@ -13,6 +15,8 @@ function AddTrainingForm({ onBack }) {
     endTime: "",
   });
   const [videoFile, setVideoFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
 
 
   const handleChange = (e) => {
@@ -23,6 +27,15 @@ function AddTrainingForm({ onBack }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+     // Validate time logic
+  const start = new Date(formData.startTime);
+  const end = new Date(formData.endTime);
+  if (end <= start) {
+    
+
+    return;
+  }
   
     const data = new FormData();
     data.append("trainingId", formData.trainingId);
@@ -42,8 +55,14 @@ function AddTrainingForm({ onBack }) {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
         },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percentCompleted);
+        }
       });
-      alert("Training added successfully!");
+      
+
+      
       setFormData({
         trainingId: "",
         trainingTitle: "",
@@ -54,9 +73,12 @@ function AddTrainingForm({ onBack }) {
         endTime: "",
       });
       setVideoFile(null);
+      refreshTrainings();  // ✅ Refresh the list
+      onBack();            // ✅ Return to Trainings page
     } catch (err) {
       console.error(err);
-      alert("Error adding training");
+      
+
     }
   };
   
@@ -104,17 +126,24 @@ function AddTrainingForm({ onBack }) {
           </div>
   
           <div className="flex flex-col">
-            <label className="mb-1 text-sm font-semibold tracking-wide">Category</label>
-            <input
-              type="text"
-              name="category"
-              placeholder="Enter Category"
-              value={formData.category}
-              onChange={handleChange}
-              className="p-4 rounded-lg bg-[#111827] text-white placeholder-green-400 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
-              required
-            />
-          </div>
+  <label className="mb-1 text-sm font-semibold tracking-wide">Category</label>
+  <select
+    name="category"
+    value={formData.category}
+    onChange={handleChange}
+    className="p-4 rounded-lg bg-[#111827] text-white border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
+    required
+  >
+    <option value="">Select a category</option>
+    <option value="Web Development">Web Development</option>
+    <option value="AI">AI</option>
+    <option value="VLSI">VLSI</option>
+    <option value="DSA">DSA</option>
+    <option value="Frontend">Frontend</option>
+    <option value="Backend">Backend</option>
+  </select>
+</div>
+
   
           <div className="flex flex-col">
             <label className="mb-1 text-sm font-semibold tracking-wide">Duration of Training (Minutes)</label>
@@ -173,6 +202,17 @@ function AddTrainingForm({ onBack }) {
               onChange={(e) => setVideoFile(e.target.files[0])}
               className="p-2 rounded-lg bg-[#111827] text-white border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
             />
+            {uploadProgress > 0 && (
+  <div className="w-full bg-gray-700 rounded mt-2">
+    <div
+      className="bg-green-500 text-xs font-bold text-center py-1 rounded"
+      style={{ width: `${uploadProgress}%` }}
+    >
+      {uploadProgress}%
+    </div>
+  </div>
+)}
+
           </div>
   
           <div className="md:col-span-2 flex justify-center">
@@ -185,7 +225,11 @@ function AddTrainingForm({ onBack }) {
 </div>
 
         </form>
+
+        
+
       </div>
+      
     
   );
   

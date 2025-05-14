@@ -60,7 +60,12 @@ const handleDeleteChapter = async (chapterId) => {
     ) : (
 
     editingChapter ? (
-      <EditChapter chapter={editingChapter} trainingId={trainingId} onBack={() => setEditingChapter(null)}  refreshChapters={fetchChapters} />
+      <EditChapter 
+      chapter={editingChapter} 
+      trainingId={trainingId} 
+      chapters={chapters} 
+      onBack={() => setEditingChapter(null)}  
+      refreshChapters={fetchChapters} />
 
     ) : (
     
@@ -103,7 +108,7 @@ const handleDeleteChapter = async (chapterId) => {
                   <th className="px-4 py-2 text-left">Name</th>
                   <th className="px-4 py-2 text-left">Description</th>
                   <th className="px-4 py-2 text-center">Attachment</th>
-                  <th className="px-4 py-2 text-center">Mandatory</th>
+                
                   <th className="px-4 py-2 text-center">Action</th>
                 </tr>
               </thead>
@@ -132,9 +137,7 @@ const handleDeleteChapter = async (chapterId) => {
                           📥
                         </a>
                       </td>
-                      <td className="px-4 py-3 text-center">
-                        {chapter.mandatory ? 'Yes' : 'No'}
-                      </td>
+                     
                       <td className="px-4 py-3 flex justify-center gap-2">
                         <button
                           onClick={() => setEditingChapter(chapter)}
