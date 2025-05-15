@@ -127,18 +127,19 @@ const [newChapterId, setNewChapterId] = useState(null);
 
   
         {/* Three other sections */}
-        <div className="w-3/4 grid grid-cols-3 gap-4">
+        <div className="w-3/4 flex gap-4">
           <div className={`bg-[#1f1f1f] p-4 rounded shadow ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
           <IndexSection trainingId={trainingId} chapterId={newChapterId} />
 
 
           </div>
-          <div className={`bg-[#1f1f1f] p-4 rounded shadow ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
-            <LinkTestSection />
-          </div>
-          <div className={`bg-[#1f1f1f] p-4 rounded shadow ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
-            <SetDependenciesSection />
-          </div>
+          <div className={`bg-[#1f1f1f] p-4 rounded shadow w-1/2 space-y-6 ${!chapterSaved && 'opacity-50 pointer-events-none'}`}>
+  <LinkTestSection trainingId={trainingId} chapterId={newChapterId} />
+  <div className="border-t border-gray-700 pt-4">
+    <SetDependenciesSection trainingId={trainingId} chapterId={newChapterId} />
+  </div>
+</div>
+
         </div>
       </div>
     </div>

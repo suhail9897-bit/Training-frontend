@@ -206,4 +206,3 @@ export default LinkTest;
 
 
 
-//ye kam to ho gya h bhai ab sun ab ye problem h:--> mne addchapterform.jsx m chapter 1 se ek test link krke fr set dependencies button click krke usme chapter1 click kiya to uske liye chapter 2 and chapter 3 option m dikh rhe hn jo ki shi h. but jab mne chapter 2 se test link kiya and fr set dependencies button k content m chapter 2 ko select kiya to usse aage wala chapter 3 mujhe show nhi ho  rha h ,dependency set krne k liye(second snip dekh)
