@@ -92,13 +92,34 @@ function Tests({ onBack }) {
         ← Back
       </button>
 
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4">
-        <input
-          type="file"
-          accept=".xlsx"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="bg-[#1f2937] p-1.5 rounded text-sm"
-        />
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4 bg-[#1e1e1e] p-4 rounded-lg shadow-md">
+
+      <div className="flex items-center gap-2 bg-[#1f2937] text-sm rounded p-1.5">
+  {file ? (
+    <>
+      <span className="text-white">{file.name}</span>
+      <button
+        onClick={() => setFile(null)}
+        className="text-white hover:text-red-500 ml-2 font-bold text-lg"
+        title="Remove file"
+      >
+        ×
+      </button>
+    </>
+  ) : (
+    <label className="text-white cursor-pointer">
+      Choose File
+      <input
+        type="file"
+        accept=".xlsx"
+        onChange={(e) => setFile(e.target.files[0])}
+        className="hidden"
+      />
+    </label>
+  )}
+</div>
+
+
         <button
           onClick={handleUpload}
           disabled={loading}
@@ -129,9 +150,12 @@ function Tests({ onBack }) {
       {tests.length === 0 ? (
         <p className="text-gray-400">No tests uploaded yet.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-white border border-green-700">
-          <thead className="bg-[#1f2937] text-green-400 uppercase">
+        <div className="overflow-x-auto rounded-lg ring-1 ring-[#333] shadow-xl">
+
+          <table className="w-full text-sm text-left text-white border border-[#2d2d2d] rounded overflow-hidden shadow-lg">
+
+          <thead className="bg-[#2c2c2c] text-green-400 text-sm uppercase tracking-wider  ">
+
   <tr>
     <th className="px-4 py-3">Test Name</th>
     <th className="px-4 py-3">Duration (min)</th>
@@ -145,16 +169,16 @@ function Tests({ onBack }) {
   {tests.map((test) => (
     <tr
       key={test._id}
-      className="bg-[#111827] border-t border-green-700 hover:bg-[#1e293b] transition"
-    >
-      <td className="px-4 py-2 text-green-300 font-medium">{test.title}</td>
-      <td className="px-4 py-2">{test.duration || 0} min</td>
-      <td className="px-4 py-2">{test.totalQuestionCount || 0}</td>
-      <td className="px-4 py-2">{test.randomizedQuestionCount || 0}</td>
-      <td className="px-4 py-2">
+      className="bg-[#181818] border-t border-[#333] hover:bg-[#222] transition duration-200 ease-in-out">
+      <td className="px-4 py-3 text-green-400 font-semibold tracking-wide">{test.title}</td>
+      <td className="px-4 py-2 text-gray-100">{test.duration || 0} min</td>
+      <td className="px-4 py-2 text-gray-100">{test.totalQuestionCount || 0}</td>
+      <td className="px-4 py-2 text-gray-100">{test.randomizedQuestionCount || 0}</td>
+      <td className="px-4 py-2 text-gray-300">
         <button
           onClick={() => downloadExcel(test._id, test.title)}
-          className="text-white hover:text-green-400 text-lg mr-3"
+          className="text-white hover:text-green-400 text-lg mr-3 transition transform hover:scale-110"
+
           title="Download Excel File"
         >
           ⤓
@@ -162,7 +186,8 @@ function Tests({ onBack }) {
         <button
           onClick={() => setPreviewId(test._id)}
           title="Preview"
-          className="text-yellow-400 hover:text-yellow-300 text-lg"
+          className="text-white hover:text-green-400 text-lg mr-3 transition transform hover:scale-110"
+
         >
           👁
         </button>
@@ -186,7 +211,8 @@ function Tests({ onBack }) {
                           }
                         }
                       }}
-                      className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm shadow"
+                      className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm shadow-md transition hover:scale-105"
+
                     >
                       🗑
                     </button>

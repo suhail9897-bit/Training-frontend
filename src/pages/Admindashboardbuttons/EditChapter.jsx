@@ -32,12 +32,6 @@ const inactiveStyle = "bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blu
 
 
 
-
-
-
-
-
-
 const handleTextUpdate = async () => {
     try {
       const response = await axios.put(
@@ -158,11 +152,28 @@ const handleTextUpdate = async () => {
             <div>
               <label className="block text-xs text-green-400 mb-1">Duration:</label>
               <input
-                type="number"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                className="w-full p-1 rounded text-black text-xs"
-              />
+  type="number"
+  value={duration}
+  min={1}
+  step={1}
+  onInput={(e) => {
+    const value = e.target.value;
+    if (/^\d+$/.test(value)) {
+      setDuration(value);
+    } else if (value === "") {
+      setDuration(""); // allow empty temporarily
+    }
+  }}
+  onKeyDown={(e) => {
+    // prevent decimal point and minus
+    if (e.key === "." || e.key === "-" || e.key === "e") {
+      e.preventDefault();
+    }
+  }}
+  className="w-full p-1 rounded text-black text-xs"
+/>
+
+
             </div>
             <div>
               <label className="block text-xs text-green-400 mb-1">Description:</label>
@@ -185,14 +196,20 @@ const handleTextUpdate = async () => {
           <hr className="my-4 border-gray-600 w-full" />
   
           <div className="w-full">
-            <label className="block text-xs text-green-400 mb-1">Replace PDF:</label>
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => setPdfFile(e.target.files[0])}
-              className="w-full p-1 bg-[#2a2a2a] rounded text-white text-xs"
-            />
-          </div>
+  <label className="block text-xs text-green-400 mb-1">Replace PDF:</label>
+
+  {chapter.pdf && !pdfFile && (
+    <p className="mb-1 text-xs text-yellow-400 italic">Current File: {chapter.pdf.split('/').pop()}</p>
+  )}
+
+  <input
+    type="file"
+    accept="application/pdf"
+    onChange={(e) => setPdfFile(e.target.files[0])}
+    className="w-full p-1 bg-[#2a2a2a] rounded text-white text-xs"
+  />
+</div>
+
   
           <button
             onClick={handlePdfReplace}

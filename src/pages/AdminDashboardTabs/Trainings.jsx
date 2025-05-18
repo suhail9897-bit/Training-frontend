@@ -9,6 +9,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { VideoCameraIcon } from '@heroicons/react/24/solid';
 
 
+
 function Trainings() {
   const [showForm, setShowForm] = useState(false);
   const [trainings, setTrainings] = useState([]);
@@ -140,7 +141,7 @@ const [selectedVideoName, setSelectedVideoName] = useState(''); // ✅ Add this
                         onClick={() => handleEditClick(training)}
                         className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded transition transform hover:scale-105"
                       >
-                        Edit
+                        ✏
                       </button>
   
                       <button
@@ -183,7 +184,8 @@ const [selectedVideoName, setSelectedVideoName] = useState(''); // ✅ Add this
           ×
         </button>
       </div>
-      <video src={selectedVideoUrl} controls className="w-full rounded-lg" />
+      <video src={selectedVideoUrl} controls className="w-full rounded-lg"  onError={() => console.error("❌ Video failed to load:", selectedVideoUrl)}
+      />
     </div>
   </div>
 )}

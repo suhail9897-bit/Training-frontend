@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Trainings from "./AdminDashboardTabs/Trainings";
 import Tests from "./AdminDashboardTabs/Tests";
+import Candidate from "./AdminDashboardTabs/Candidate";
+
 
 
 function AdminDashboard() {
@@ -43,11 +45,25 @@ function AdminDashboard() {
   </button>
 
   <button
+  onClick={() => setActiveTab("candidates")}
+  className={`px-3 py-1.5 rounded-md font-medium transition-all duration-300 text-sm shadow-md ${
+    activeTab === "candidates"
+      ? "bg-green-400 text-black hover:bg-green-600"
+      : "bg-green-600 text-black hover:bg-green-500"
+  }`}
+>
+  Candidates
+</button>
+
+  <button
     onClick={handleLogout}
     className="px-3 py-1.5 rounded-md font-medium text-white bg-red-600 hover:bg-red-500 transition-all duration-300 shadow-md text-sm"
   >
     Logout
   </button>
+
+  
+
 </nav>
 
       </header>
@@ -73,6 +89,13 @@ function AdminDashboard() {
             <Tests />
           </div>
         )}
+
+        {activeTab === "candidates" && (
+          <div className="w-full h-full">
+            <Candidate />
+          </div>
+        )}
+
 
       </main>
     </div>

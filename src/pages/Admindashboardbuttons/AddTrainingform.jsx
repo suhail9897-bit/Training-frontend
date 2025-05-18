@@ -32,6 +32,7 @@ function AddTrainingForm({ onBack, refreshTrainings }) {
   const start = new Date(formData.startTime);
   const end = new Date(formData.endTime);
   if (end <= start) {
+    alert("End time must be greater than start time");
     
 
     return;
@@ -150,9 +151,14 @@ function AddTrainingForm({ onBack, refreshTrainings }) {
             <input
               type="number"
               name="duration"
+               min="1"
+              step="1"
               placeholder="Enter Duration in Minutes"
               value={formData.duration}
               onChange={handleChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, ''); // ✅ allow only digits
+              }}
               className="p-4 rounded-lg bg-[#111827] text-white placeholder-green-400 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
               required
             />
@@ -177,6 +183,7 @@ function AddTrainingForm({ onBack, refreshTrainings }) {
               name="endTime"
               value={formData.endTime}
               onChange={handleChange}
+              min={formData.startTime}
               className="p-4 rounded-lg bg-[#111827] text-white border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300 [color-scheme:dark]"
               required
             />
@@ -196,12 +203,27 @@ function AddTrainingForm({ onBack, refreshTrainings }) {
   
           <div className="flex flex-col md:col-span-2">
             <label className="mb-1 text-sm font-semibold tracking-wide">Upload Training Video</label>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={(e) => setVideoFile(e.target.files[0])}
-              className="p-2 rounded-lg bg-[#111827] text-white border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
-            />
+            {!videoFile ? (
+  <input
+    type="file"
+    accept="video/*"
+    onChange={(e) => setVideoFile(e.target.files[0])}
+    className="p-2 rounded-lg bg-[#111827] text-white border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-inner transition duration-300"
+  />
+) : (
+  <div className="flex items-center justify-between bg-[#111827] text-white px-4 py-2 rounded border border-green-700">
+    <span className="truncate">{videoFile.name}</span>
+    <button
+      type="button"
+      onClick={() => setVideoFile(null)}
+      className="ml-4 text-red-500 hover:text-red-400 text-xl font-bold"
+      title="Remove"
+    >
+      &times;
+    </button>
+  </div>
+)}
+
             {uploadProgress > 0 && (
   <div className="w-full bg-gray-700 rounded mt-2">
     <div

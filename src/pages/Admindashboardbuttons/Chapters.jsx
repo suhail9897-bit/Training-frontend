@@ -10,6 +10,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 
 
+
 function Chapters({ onBack, trainingId }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingChapter, setEditingChapter] = useState(null); 
@@ -142,7 +143,7 @@ const handleDeleteChapter = async (chapterId) => {
                         <button
                           onClick={() => setEditingChapter(chapter)}
                          className="px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm shadow transform hover:scale-105">
-                          Edit
+                          ✏
                         </button>
                        
                         

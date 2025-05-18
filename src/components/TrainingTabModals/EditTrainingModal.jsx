@@ -12,6 +12,14 @@ function EditTrainingModal({ training, onClose, onUpdate }) {
   };
 
   const handleSubmit = async () => {
+
+    const start = new Date(formData.startTime);
+    const end = new Date(formData.endTime);
+  
+    if (end <= start) {
+      alert("End time must be greater than start time.");
+      return;
+    }
     try {
       const data = new FormData();
 data.append("trainingId", formData.trainingId);
@@ -87,12 +95,21 @@ await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, data, {
           {/* Category */}
           <div>
             <label className="block text-xs font-semibold mb-1">Category</label>
-            <input
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full p-1.5 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm"
-            />
+            <select
+    name="category"
+    value={formData.category}
+    onChange={handleChange}
+    className="w-full p-1.5 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm"
+    required
+  >
+    <option value="">Select a category</option>
+    <option value="Web Development">Web Development</option>
+    <option value="AI">AI</option>
+    <option value="VLSI">VLSI</option>
+    <option value="DSA">DSA</option>
+    <option value="Frontend">Frontend</option>
+    <option value="Backend">Backend</option>
+  </select>
           </div>
   
           {/* Duration */}
@@ -101,8 +118,13 @@ await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, data, {
             <input
               type="number"
               name="duration"
+              step="1" // ✅ Force only integers
+              min="1"
               value={formData.duration}
               onChange={handleChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, ''); // ✅ allow only digits
+              }}
               className="w-full p-1.5 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm"
             />
           </div>
@@ -127,18 +149,33 @@ await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, data, {
               name="endTime"
               value={formData.endTime.slice(0, 16)}
               onChange={handleChange}
+              min={formData.startTime.slice(0, 16)}
               className="w-full p-1.5 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition text-sm [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
             />
           </div>
         </div>
         <div className="sm:col-span-2 mt-3">
   <label className="block text-xs font-semibold mb-1">Replace Video (optional)</label>
+  {videoFile ? (
+  <div className="flex items-center justify-between mt-2 p-2 bg-[#111] border border-gray-600 rounded">
+    <span className="text-sm text-gray-300 truncate max-w-[80%]">{videoFile.name}</span>
+    <button
+      onClick={() => setVideoFile(null)}
+      className="text-red-400 text-lg hover:text-red-500"
+      title="Remove selected video"
+    >
+      ×
+    </button>
+  </div>
+) : (
   <input
     type="file"
     accept="video/*"
     onChange={(e) => setVideoFile(e.target.files[0])}
     className="w-full p-1.5 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition text-sm"
   />
+)}
+
 </div>
 
   
