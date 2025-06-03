@@ -130,7 +130,7 @@ const handleDeleteChapter = async (chapterId) => {
                       <td className="px-4 py-3">{chapter.description}</td>
                       <td className="px-4 py-3 text-center">
                         <a
-                          href={`${API_BASE_URL}/uploads/${chapter.pdf}`}
+                          href={`${chapter.pdf}`}
                           target="_blank"
                           rel="noreferrer"
                           className="hover:text-green-400 transition"

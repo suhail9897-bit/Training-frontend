@@ -114,25 +114,24 @@ const [selectedVideoName, setSelectedVideoName] = useState(''); // ✅ Add this
                     <td className="py-3 px-4">{training.trainingId}</td>
                     <td className="py-3 px-4">{training.trainingTitle}</td>
                     <td className="py-3 px-4">{training.description}</td>
-                    <td className="py-3 px-4">
+                   <td className="py-3 px-4">
   {training.videoPath ? (
- <button
- onClick={() => {
-   setSelectedVideoUrl(`${API_BASE_URL}${training.videoPath}`);
-   const fileName = training.videoPath.split('/').pop(); // ✅ Extract filename
-   setSelectedVideoName(fileName); // ✅ Set it
-   setShowVideoModal(true);
- }}
- className="p-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full shadow-md transition transform hover:scale-110"
->
- <VideoCameraIcon className="h-5 w-5" />
-</button>
-
-
+    <button
+      onClick={() => {
+        setSelectedVideoUrl(training.videoPath); // ✅ FIXED LINE
+        const fileName = training.videoPath.split('/').pop();
+        setSelectedVideoName(fileName);
+        setShowVideoModal(true);
+      }}
+      className="p-2 bg-yellow-500 hover:bg-yellow-400 text-black rounded-full shadow-md transition transform hover:scale-110"
+    >
+      <VideoCameraIcon className="h-5 w-5" />
+    </button>
   ) : (
     <span className="text-gray-500">No Video</span>
   )}
 </td>
+
 
                     <td className="py-3 px-4">{training.category}</td>
                     
@@ -184,8 +183,14 @@ const [selectedVideoName, setSelectedVideoName] = useState(''); // ✅ Add this
           ×
         </button>
       </div>
-      <video src={selectedVideoUrl} controls className="w-full rounded-lg"  onError={() => console.error("❌ Video failed to load:", selectedVideoUrl)}
-      />
+      <video
+  src={selectedVideoUrl}
+  controls
+  type="video/mp4"
+  className="w-full rounded-lg"
+  onError={() => console.error("❌ Video failed to load:", selectedVideoUrl)}
+/>
+
     </div>
   </div>
 )}

@@ -156,7 +156,7 @@ await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, data, {
         </div>
         <div className="sm:col-span-2 mt-3">
   <label className="block text-xs font-semibold mb-1">Replace Video (optional)</label>
-  {videoFile ? (
+ {videoFile ? (
   <div className="flex items-center justify-between mt-2 p-2 bg-[#111] border border-gray-600 rounded">
     <span className="text-sm text-gray-300 truncate max-w-[80%]">{videoFile.name}</span>
     <button
@@ -167,6 +167,21 @@ await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, data, {
       ×
     </button>
   </div>
+) : training.videoFilename ? (
+  <div className="flex items-center justify-between mt-2 p-2 bg-[#111] border border-gray-600 rounded">
+    <span className="text-sm text-yellow-300 italic truncate max-w-[80%]">
+      Current File: {training.videoFilename}
+    </span>
+    <label className="text-gray-100 hover:underline cursor-pointer ml-3">
+      <input
+        type="file"
+        accept="video/*"
+        onChange={(e) => setVideoFile(e.target.files[0])}
+        className="hidden"
+      />
+      Choose new
+    </label>
+  </div>
 ) : (
   <input
     type="file"
@@ -175,6 +190,7 @@ await axios.put(`${API_BASE_URL}/api/admin/training/${training._id}`, data, {
     className="w-full p-1.5 rounded bg-[#111] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition text-sm"
   />
 )}
+
 
 </div>
 

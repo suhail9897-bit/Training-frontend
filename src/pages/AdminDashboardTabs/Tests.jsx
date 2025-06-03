@@ -60,27 +60,14 @@ function Tests({ onBack }) {
   };
 
 
-  const downloadExcel = async (id, title) => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/admin/test/${id}/download`, {
-        responseType: 'blob',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-  
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${title}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      console.error("Download error", err);
-      alert("Failed to download test file");
-    }
-  };
+ const downloadExcel = (id) => {
+  const token = localStorage.getItem("token");
+  const downloadUrl = `${API_BASE_URL}/api/admin/test/${id}/download`;
+
+  // 👇 Open in a new tab so browser handles it
+  window.open(downloadUrl, '_blank');
+};
+
   
 
   return (
