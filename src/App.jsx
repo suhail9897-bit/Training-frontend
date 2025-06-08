@@ -4,6 +4,9 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import CandidateDashboard from './pages/CandidateDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 import './App.css';
 
 
@@ -27,6 +30,7 @@ const App = () => {
     element={
       <ProtectedRoute allowedRole="candidate">
         <CandidateDashboard />
+         <ToastContainer />
       </ProtectedRoute>
     }
   />
@@ -43,7 +47,9 @@ const App = () => {
       )
     }
   />
+  
 </Routes>
+
 
   );
 };
